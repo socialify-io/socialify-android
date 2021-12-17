@@ -4,7 +4,13 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         jcenter() // Warning: this repository is going to shut down soon
+        gradlePluginPortal()
+        maven { url "https://plugins.gradle.org/m2/" }
     }
 }
+
+//apply plugin: "org.jetbrains.kotlin.plugin.serialization"
+
 rootProject.name = "socialify-android"
 include ':app'
+include ':SocialifySdk'
