@@ -1,6 +1,5 @@
 package io.socialify.socialifysdk.models.responses
 
-import android.support.annotation.Keep
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -30,3 +29,17 @@ data class PublicKeyResponse(
     @Json(name = "pubKey")
     val pubKey: String
 )
+
+@JsonClass(generateAdapter = true)
+data class NewDeviceResponse(
+    @Json(name = "deviceId")
+    val deviceId: Int,
+
+    @Json(name = "userId")
+    val userId: Int
+)
+
+//@JsonClass(generateAdapter = true)
+//data class RegisterResponse(
+//    @Json(name = "")
+//)

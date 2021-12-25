@@ -10,4 +10,14 @@
     <string name="login_crete_account_two">Create it!</string>
     <string name="login_button">Log in</string>
 
+    // REGISTER
+    <string name="register_title">Create</string>
+    <string name="register_subtitle">your Socialify account</string>
+    <string name="register_username">Username</string>
+    <string name="register_password">Password</string>
+    <string name="register_password_repeat">Repeat password</string>
+    <string name="register_login_to_account_one">Already have an account?</string>
+    <string name="register_login_to_account_two">Log in</string>
+    <string name="register_button">Create</string>
+
 </resources>

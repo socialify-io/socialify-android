@@ -2,18 +2,22 @@ package io.socialify.socialify_android
 
 import android.os.Build
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.util.Log
-import android.widget.Button
-import android.widget.EditText
 import io.socialify.socialifysdk.SocialifyClient
 import android.os.StrictMode
 import android.os.StrictMode.ThreadPolicy
-import android.view.View
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import io.socialify.socialify_android.ui.LoginFragmentDirections
+import io.socialify.socialify_android.ui.RegisterFragmentDirections
 
+
+val client = SocialifyClient()
 
 class MainActivity : AppCompatActivity() {
-    val client = SocialifyClient()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,17 +28,10 @@ class MainActivity : AppCompatActivity() {
             StrictMode.setThreadPolicy(policy)
         }
         supportActionBar?.hide()
-        setContentView(R.layout.login)
+        setContentView(R.layout.activity_add_account)
 
-        val actionButton = findViewById<Button>(R.id.actionButton)
-
-        actionButton.setOnClickListener {
-            val username = findViewById<EditText>(R.id.usernameInput).text.toString()
-            val password = findViewById<EditText>(R.id.passwordInput).text.toString()
-
-            client.registerDevice(username, password)
-
-            actionButton.text = "Clicked!"
-        }
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.login_nav_host_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
     }
 }
