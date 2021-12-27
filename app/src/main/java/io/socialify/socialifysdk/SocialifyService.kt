@@ -21,7 +21,7 @@ interface SocialifyService {
     fun newDevice(
         @Header("AuthToken") authToken: String,
         @Header("Timestamp") timestamp: String,
- //       @Body payload: NewDevicePayload
+        @Body payload: NewDevicePayload
     ): Call<ApiResponse<NewDeviceResponse>>
 
     @POST("register")

@@ -1,9 +1,11 @@
 import android.os.Build
+import android.security.keystore.KeyProperties
 import androidx.annotation.RequiresApi
 import java.security.spec.PKCS8EncodedKeySpec
 import javax.crypto.Cipher
 import java.security.spec.X509EncodedKeySpec
 import java.io.IOException
+import java.math.BigInteger
 import java.security.*
 import java.util.*
 
@@ -12,8 +14,25 @@ import java.util.*
  * Cipher Type: RSA/ECB/PKCS1Padding
  */
 
+// Getting fingerprint with SHA1 algorithm
+fun getFingerprint(privateKey: String): String {
+    val md = MessageDigest.getInstance("SHA-1")
+    val digest = md.digest(privateKey.toByteArray())
+    val no = BigInteger(1, digest)
 
-// convert String publickey to Key object
+    return no.toString(16)
+}
+
+
+// Generate RSA keypair
+fun generateKeyPair(): KeyPair {
+    val generator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA)
+
+    generator.initialize(2048, SecureRandom())
+    return generator.genKeyPair()
+}
+
+// Convert String publickey to Key object
 @RequiresApi(Build.VERSION_CODES.O)
 @Throws(GeneralSecurityException::class, IOException::class)
 fun loadPublicKey(stored: String): Key {

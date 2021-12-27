@@ -6,7 +6,12 @@ import androidx.annotation.RequiresApi
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import encryptMessage
+import generateKeyPair
+import getFingerprint
 import io.socialify.socialifysdk.crypto.BCrypt
+import io.socialify.socialifysdk.models.SdkResponse
+import io.socialify.socialifysdk.models.payloads.DeviceInfo
+import io.socialify.socialifysdk.models.payloads.NewDevicePayload
 import io.socialify.socialifysdk.models.payloads.RegisterPayload
 import io.socialify.socialifysdk.models.responses.ApiResponse
 import io.socialify.socialifysdk.models.responses.PublicKeyResponse
@@ -15,6 +20,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
+import java.util.*
 
 class SocialifyClient {
     val apiVersion = "0.1"
@@ -61,29 +67,54 @@ class SocialifyClient {
 
     val api: SocialifyService = retrofit.create()
 
-    fun registerDevice(username: String, password: String) {
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun registerDevice(username: String, password: String): SdkResponse {
         val builder = FormBody.Builder()
         builder.add("username", username)
             .add("password", password)
 
         val key: String? = getKey()
+        val encPass = encryptMessage(password, key!!)
+        val keypair = generateKeyPair()
 
-        val timestamp: String = System.currentTimeMillis().toString()
+        val signPubKey = Base64.getEncoder().encodeToString(keypair.public.encoded)
+        val signPrivKey = Base64.getEncoder().encodeToString(keypair.private.encoded)
 
-//        api.newDevice(generateAuthToken("newDevice", timestamp), timestamp)
-//
-//                .execute()
+        val fingerprint = getFingerprint(signPrivKey)
+
+        val timestamp: String = (System.currentTimeMillis()/1000).toString()
+
+        Log.e("TIMESTAMP", timestamp)
+
+        val payload = NewDevicePayload(
+            username = username,
+            password =  encPass,
+            pubKey = key!!,
+            device = DeviceInfo(
+                deviceName = "android",
+                signPubKey = signPubKey,
+                fingerprint = fingerprint
+            )
+        )
+
+        val response = api.newDevice(generateAuthToken("newDevice", timestamp), timestamp, payload)
+                .execute().body()
+
+        return SdkResponse(
+            response?.success ?: false,
+            response?.error
+        )
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun registerAccount(
         username: String,
         password: String,
-        repeatedPassword: String) {
+        repeatedPassword: String): SdkResponse {
         val key: String? = getKey()
         val encryptedPassword = encryptMessage(password, key!!)
 
-        val timestamp: String = System.currentTimeMillis().toString()
+        val timestamp: String = (System.currentTimeMillis()/1000).toString()
 
         val payload = RegisterPayload(
             username = username,
@@ -95,55 +126,20 @@ class SocialifyClient {
         val response = api.register(generateAuthToken("register", timestamp), timestamp, payload)
             .execute().body()
 
-        Log.e("RESPONSE", response.toString())
+        return SdkResponse(
+            response?.success ?: false,
+            response?.error
+        )
     }
 
     private fun getKey(): String? {
-        val timestamp: String = System.currentTimeMillis().toString()
+        val timestamp: String = (System.currentTimeMillis()/1000).toString()
 
         val response = api.key(generateAuthToken("getKey", timestamp), timestamp)
                 .execute().body()
 
         return response?.data?.pubKey
     }
-
-//    private fun getKey(): String? {
-//        val url = "${route}getKey"
-//
-//        val headers = generateHeaders("getKey")
-//
-//        var request = Request.Builder()
-//            .url(url)
-//            .headers(headers)
-//            .build()
-//
-//        val response = getKey()
-//        Log.e("RESPONSE", response.toString())
-
-//        val pubKey: String? = ""
-//        val response = okhttpClient.newCall(request).execute().body?.string()
-//
-//        val call = okhttpClient.newCall(request)
-//        call.enqueue(object: Callback {
-//            override fun onFailure(call: Call, e: IOException) {
-//                println(e)
-//            }
-//
-//            override fun onResponse(call: Call?, response: Response) {
-//                val responseData: String? = response.body()?.string()
-//                try {
-//                    val publicKeyType = Types.newParameterizedType(ApiResponse::class.java, PublicKeyResponse::class.java)
-//                    val jsonAdapter: JsonAdapter<ApiResponse<PublicKeyResponse>> = moshi.adapter<ApiResponse<PublicKeyResponse>>(publicKeyType)
-//                    val jsonResponse: ApiResponse<PublicKeyResponse>? = jsonAdapter.fromJson(responseData)
-//                    pubKey = jsonResponse?.data?.pubKey
-//                } catch (e: JSONException) {
-//                    e.printStackTrace()
-//                }
-//            }
-//        })
-//
-//        return pubKey
-//    }
 
     private fun generateAuthToken(endpoint: String, timestamp: String): String {
         val authTokenBeginHeader = "$" + "begin-${endpoint}$"
@@ -157,8 +153,4 @@ class SocialifyClient {
         return BCrypt.hashpw(authTokenRaw, BCrypt.gensalt())
     }
 
-//    fun parseResponse(response: Response): String? {
-//        val body = response.body?.string()
-//        return body
-//    }
 }

@@ -19,5 +19,10 @@
     <string name="register_login_to_account_one">Already have an account?</string>
     <string name="register_login_to_account_two">Log in</string>
     <string name="register_button">Create</string>
+    <string name="register_success">Account has been successfully created. Now you\'ll be moved to login panel.</string>
+
+    <string name="report">Report</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
 
 </resources>
