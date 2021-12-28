@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.socialify.socialify_android.R
 import io.socialify.socialify_android.client
 import io.socialify.socialifysdk.models.SdkResponse
@@ -51,7 +52,7 @@ class RegisterFragment: Fragment() {
             val dialogText: String?
 
             if(resp.success) {
-                AlertDialog.Builder(requireContext())
+                MaterialAlertDialogBuilder(requireContext())
                     .setMessage(getString(R.string.register_success))
                     .setPositiveButton(getString(R.string.ok)) { _, _ ->
                         view?.findNavController()?.navigate(loginFragmentNavigator)
@@ -59,7 +60,7 @@ class RegisterFragment: Fragment() {
                     .create()
                     .show()
             } else {
-                AlertDialog.Builder(requireContext())
+                MaterialAlertDialogBuilder(requireContext())
                     .setMessage(resp.error.toString())
                     .setPositiveButton(getString(R.string.report)) { _, _ -> }
                     .setNegativeButton(getString(R.string.cancel)) { _, _ -> }

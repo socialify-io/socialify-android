@@ -47,6 +47,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
     implementation 'androidx.navigation:navigation-dynamic-features-fragment:2.3.5'
     implementation 'androidx.navigation:navigation-compose:2.4.0-rc01'
+    implementation 'com.google.android.material:material:1.5.0-alpha04'
 
     kapt 'com.squareup.moshi:moshi-kotlin-codegen:1.12.0'
 

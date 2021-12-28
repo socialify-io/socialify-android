@@ -5,14 +5,14 @@ import android.os.Bundle
 import io.socialify.socialifysdk.SocialifyClient
 import android.os.StrictMode
 import android.os.StrictMode.ThreadPolicy
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import com.google.android.material.color.DynamicColors
+import io.socialify.socialify_android.ui.LoginFragment
 import io.socialify.socialify_android.ui.LoginFragmentDirections
-import io.socialify.socialify_android.ui.RegisterFragmentDirections
+import io.socialify.socialify_android.ui.StartFragmentDirections
 
 
 val client = SocialifyClient()
@@ -28,10 +28,12 @@ class MainActivity : AppCompatActivity() {
             StrictMode.setThreadPolicy(policy)
         }
         supportActionBar?.hide()
-        setContentView(R.layout.activity_add_account)
+        DynamicColors.applyIfAvailable(this);
+        setContentView(R.layout.activity_main_activity)
 
         val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.login_nav_host_fragment) as NavHostFragment
+            supportFragmentManager.findFragmentById(R.id.start_nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
+
     }
 }

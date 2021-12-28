@@ -51,50 +51,116 @@
             app:layout_constraintTop_toBottomOf="@+id/registerTitle"
             app:layout_constraintVertical_bias="0.005" />
 
-        <EditText
-            android:id="@+id/registerUsernameInput"
-            android:layout_width="300dp"
-            android:layout_height="45dp"
-            android:layout_marginTop="50dp"
-            android:ems="10"
+<!--        <EditText-->
+<!--            android:id="@+id/registerUsernameInput"-->
+<!--            android:layout_width="300dp"-->
+<!--            android:layout_height="45dp"-->
+<!--            android:layout_marginTop="50dp"-->
+<!--            android:ems="10"-->
+<!--            android:hint="@string/register_username"-->
+<!--            android:inputType="textPersonName"-->
+<!--            android:textCursorDrawable="@drawable/cursor"-->
+<!--            android:theme="@style/EditTextTheme"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintHorizontal_bias="0.495"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/registerSubtitle" />-->
+
+<!--        <EditText-->
+<!--            android:id="@+id/registerPasswordInput"-->
+<!--            android:layout_width="300dp"-->
+<!--            android:layout_height="45dp"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:ems="10"-->
+<!--            android:hint="@string/register_password"-->
+<!--            android:inputType="textPersonName"-->
+<!--            android:textCursorDrawable="@drawable/cursor"-->
+<!--            android:theme="@style/EditTextTheme"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintHorizontal_bias="0.495"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/registerUsernameInput" />-->
+
+<!--        <EditText-->
+<!--            android:id="@+id/registerRepeatPasswordInput"-->
+<!--            android:layout_width="300dp"-->
+<!--            android:layout_height="45dp"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:ems="10"-->
+<!--            android:hint="@string/register_password_repeat"-->
+<!--            android:inputType="textPersonName"-->
+<!--            android:textCursorDrawable="@drawable/cursor"-->
+<!--            android:theme="@style/EditTextTheme"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintHorizontal_bias="0.495"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/registerPasswordInput" />-->
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/registerUsernameInputLayout"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
             android:hint="@string/register_username"
-            android:inputType="textPersonName"
-            android:textCursorDrawable="@drawable/cursor"
-            android:theme="@style/EditTextTheme"
+            android:ems="10"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.495"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/registerSubtitle" />
+            app:layout_constraintTop_toBottomOf="@+id/registerSubtitle">
 
-        <EditText
-            android:id="@+id/registerPasswordInput"
-            android:layout_width="300dp"
-            android:layout_height="45dp"
-            android:layout_marginTop="10dp"
-            android:ems="10"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/registerUsernameInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/registerPasswordInputLayout"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:hint="@string/register_password"
-            android:inputType="textPersonName"
-            android:textCursorDrawable="@drawable/cursor"
-            android:theme="@style/EditTextTheme"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.495"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/registerUsernameInput" />
-
-        <EditText
-            android:id="@+id/registerRepeatPasswordInput"
-            android:layout_width="300dp"
-            android:layout_height="45dp"
-            android:layout_marginTop="10dp"
             android:ems="10"
-            android:hint="@string/register_password_repeat"
-            android:inputType="textPersonName"
-            android:textCursorDrawable="@drawable/cursor"
-            android:theme="@style/EditTextTheme"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.495"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/registerPasswordInput" />
+            app:layout_constraintTop_toBottomOf="@+id/registerUsernameInputLayout">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/registerPasswordInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/registerRepeatPasswordInputLayout"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:hint="@string/register_password_repeat"
+            android:ems="10"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.495"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/registerPasswordInputLayout">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/registerRepeatPasswordInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -104,7 +170,7 @@
             app:layout_constraintBottom_toTopOf="@+id/registerButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/registerRepeatPasswordInput"
+            app:layout_constraintTop_toBottomOf="@+id/registerRepeatPasswordInputLayout"
             app:layout_constraintVertical_bias="0.06">
 
             <TextView
@@ -131,12 +197,10 @@
 
         <Button
             android:id="@+id/registerButton"
-            android:layout_width="300dp"
-            android:layout_height="50dp"
+            android:layout_width="325dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
-            android:background="@drawable/button"
             android:text="@string/register_button"
-            android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.495"
