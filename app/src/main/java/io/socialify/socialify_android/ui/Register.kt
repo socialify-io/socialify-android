@@ -1,5 +1,8 @@
 package io.socialify.socialify_android.ui
 
+import android.content.res.Resources
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -12,6 +15,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -20,11 +24,19 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.navigation.NavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import io.socialify.socialify_android.MainActivity
 import io.socialify.socialify_android.R
+import io.socialify.socialifysdk.models.SdkResponse
 
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Register(navController: NavController) {
+    val context = LocalContext.current
+
     var username by remember { mutableStateOf(TextFieldValue("")) }
     var password by remember { mutableStateOf(TextFieldValue("")) }
     var repeatedPassword by remember { mutableStateOf(TextFieldValue("")) }
@@ -121,7 +133,31 @@ fun Register(navController: NavController) {
 
         Column() {
             Button(
-                onClick = {},
+                onClick = {
+                    val resp: SdkResponse = MainActivity.client.registerAccount(username.text,
+                        password.text,
+                        repeatedPassword.text
+                    )
+
+                    val dialogText: String?
+
+                    if(resp.success) {
+                        MaterialAlertDialogBuilder(context)
+                            .setMessage(context.getString(R.string.register_success))
+                            .setPositiveButton(context.getString(R.string.ok)) { _, _ ->
+                                navController.navigate("login")
+                            }
+                            .create()
+                            .show()
+                    } else {
+                        MaterialAlertDialogBuilder(context)
+                            .setMessage(resp.error.toString())
+                            .setPositiveButton(context.getString(R.string.report)) { _, _ -> }
+                            .setNegativeButton(context.getString(R.string.cancel)) { _, _ -> }
+                            .create()
+                            .show()
+                    }
+                },
                 shape = CircleShape,
                 modifier = Modifier
                     .width(325.dp)

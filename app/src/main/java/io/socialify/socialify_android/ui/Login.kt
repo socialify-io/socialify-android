@@ -1,8 +1,11 @@
 package io.socialify.socialify_android.ui
 
+import android.annotation.SuppressLint
 import android.content.res.Resources
 import android.icu.text.CaseMap
+import android.os.Build
 import android.widget.EditText
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,6 +19,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -24,13 +28,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.theme.MaterialComponentsViewInflater
+import io.socialify.socialify_android.MainActivity
 import io.socialify.socialify_android.R
+import io.socialify.socialify_android.SharedPreference
 import io.socialify.socialify_android.ui.theme.SocialifyandroidTheme
+import io.socialify.socialifysdk.models.SdkResponse
 
+@SuppressLint("RestrictedApi")
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Login(navController: NavController) {
+    val context = LocalContext.current
+    val sharedPreference: SharedPreference = SharedPreference(context)
+
     var username by remember { mutableStateOf(TextFieldValue("")) }
     var password by remember { mutableStateOf(TextFieldValue("")) }
 
@@ -112,7 +125,25 @@ fun Login(navController: NavController) {
 
         Column() {
             Button(
-                onClick = {},
+                onClick = {
+                    val resp: SdkResponse = MainActivity.client.registerDevice(username.text,
+                        password.text
+                    )
+
+                    if(resp.success) {
+                        sharedPreference.save("isUserLogged", true)
+
+                        navController.navigate("navigation")
+                    } else {
+                        MaterialAlertDialogBuilder(context)
+                            .setMessage(resp.error.toString())
+                            .setPositiveButton(context.getString(R.string.report)) { _, _ -> }
+                            .setNegativeButton(context.getString(R.string.cancel)) { _, _ -> }
+                            .create()
+                            .show()
+                    }
+
+                },
                 shape = CircleShape,
                 modifier = Modifier
                     .width(325.dp)
