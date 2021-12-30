@@ -13,4 +13,13 @@
         <item name="colorControlHighlight">@color/primary_color</item>
     </style>
 
+    <style name="Theme.Socialifyandroid.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.Socialifyandroid.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.Socialifyandroid.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
 </resources>

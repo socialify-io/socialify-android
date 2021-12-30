@@ -24,5 +24,6 @@
     <string name="report">Report</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
+    <string name="title_activity_main2">MainActivity2</string>
 
 </resources>

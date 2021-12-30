@@ -1,39 +1,49 @@
 package io.socialify.socialify_android
 
-import android.os.Build
 import android.os.Bundle
-import io.socialify.socialifysdk.SocialifyClient
-import android.os.StrictMode
-import android.os.StrictMode.ThreadPolicy
-import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
-import com.google.android.material.color.DynamicColors
-import io.socialify.socialify_android.ui.LoginFragment
-import io.socialify.socialify_android.ui.LoginFragmentDirections
-import io.socialify.socialify_android.ui.StartFragmentDirections
+import android.provider.ContactsContract
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import io.socialify.socialify_android.ui.Login
+import io.socialify.socialify_android.ui.Register
+import io.socialify.socialify_android.ui.theme.SocialifyandroidTheme
 
-
-val client = SocialifyClient()
-
-class MainActivity : AppCompatActivity() {
-
+class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val SDK_INT = Build.VERSION.SDK_INT
-        if (SDK_INT > 8) {
-            val policy = ThreadPolicy.Builder()
-                .permitAll().build()
-            StrictMode.setThreadPolicy(policy)
+
+        val sharedPreference: SharedPreference = SharedPreference(this)
+        val isUserLogged: Boolean = sharedPreference.getValue("isUserLogged")
+
+
+
+        if(isUserLogged) {
+            setContent {
+                SocialifyandroidTheme {
+                    Text("Jesteś zalogowany, czy coś, nie wiem xd")
+                }
+            }
+        } else {
+            setContent {
+                val navController = rememberNavController()
+
+                SocialifyandroidTheme {
+                    NavHost(navController = navController, startDestination = "login") {
+                        composable("login") { Login(navController) }
+                        composable("register") { Register(navController) }
+                    }
+                }
+            }
         }
-        supportActionBar?.hide()
-        DynamicColors.applyIfAvailable(this);
-        setContentView(R.layout.activity_main_activity)
-
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.start_nav_host_fragment) as NavHostFragment
-        val navController = navHostFragment.navController
-
     }
 }

@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.socialify.socialify_android">
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:icon="@mipmap/ic_socialify"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_socialify"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Socialifyandroid">
+        android:theme="@style/Theme.Socialifyandroid"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".MainActivity2"
+            android:exported="false"
+            android:label="@string/title_activity_main2"
+            android:theme="@style/Theme.Socialifyandroid.NoActionBar" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
