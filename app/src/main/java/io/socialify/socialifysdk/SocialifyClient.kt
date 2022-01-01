@@ -24,7 +24,7 @@ import java.util.*
 
 class SocialifyClient {
     val apiVersion = "0.1"
-    val route: String = "http://192.168.8.199:5000/api/v${apiVersion}/"
+    val route: String = "http://192.168.8.151/api/v${apiVersion}/"
 
     val appVersion = "0.1"
     val userAgent = "Socialify-android"
