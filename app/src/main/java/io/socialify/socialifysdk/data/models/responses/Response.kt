@@ -1,4 +1,4 @@
-package io.socialify.socialifysdk.models.responses
+package io.socialify.socialifysdk.data.models.responses
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

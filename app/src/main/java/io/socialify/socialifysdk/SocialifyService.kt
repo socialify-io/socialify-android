@@ -1,14 +1,13 @@
 package io.socialify.socialifysdk
 
-import io.socialify.socialifysdk.models.payloads.*
-import io.socialify.socialifysdk.models.responses.*
+import io.socialify.socialifysdk.data.models.payloads.*
+import io.socialify.socialifysdk.data.models.responses.*
 import org.json.JSONArray
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
-import java.util.*
 
 interface SocialifyService {
     @GET("getKey")

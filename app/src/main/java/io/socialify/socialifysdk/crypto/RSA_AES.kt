@@ -1,4 +1,5 @@
 import android.os.Build
+import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import androidx.annotation.RequiresApi
 import java.security.spec.PKCS8EncodedKeySpec
@@ -25,11 +26,29 @@ fun getFingerprint(privateKey: String): String {
 
 
 // Generate RSA keypair
+@RequiresApi(Build.VERSION_CODES.M)
 fun generateKeyPair(): KeyPair {
-    val generator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA)
+//    val generator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA)
+//
+//    generator.initialize(2048, SecureRandom())
+//    return generator.genKeyPair()
 
-    generator.initialize(2048, SecureRandom())
-    return generator.genKeyPair()
+    val keyPair: KeyPairGenerator = KeyPairGenerator.getInstance(
+        KeyProperties.KEY_ALGORITHM_RSA,
+        "AndroidKeyStore"
+    )
+
+    val parameterSpec: KeyGenParameterSpec = KeyGenParameterSpec.Builder(
+        "DeviceSignKeypair",
+        KeyProperties.PURPOSE_SIGN or KeyProperties.PURPOSE_VERIFY)
+        .setDigests(KeyProperties.DIGEST_SHA1)
+        .setKeySize(2048)
+        .setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1)
+        .build()
+
+    keyPair.initialize(parameterSpec, SecureRandom())
+
+    return keyPair.generateKeyPair()
 }
 
 // Convert String publickey to Key object

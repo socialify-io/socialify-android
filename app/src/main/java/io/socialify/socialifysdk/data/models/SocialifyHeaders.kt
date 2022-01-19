@@ -1,4 +1,4 @@
-package io.socialify.socialifysdk.models
+package io.socialify.socialifysdk.data.models
 
 data class SocialifyHeaders (val authToken: String) {
     var contentType: String = "application/json"

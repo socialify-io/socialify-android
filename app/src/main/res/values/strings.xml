@@ -26,4 +26,8 @@
     <string name="ok">OK</string>
     <string name="title_activity_main2">MainActivity2</string>
 
+    // CHAT
+    <string name="message_input_placeholder">Text here...</string>
+    <string name="search_placeholder">Search</string>
+
 </resources>

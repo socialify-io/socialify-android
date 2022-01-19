@@ -3,28 +3,36 @@ package io.socialify.socialifysdk
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.room.Room
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import encryptMessage
 import generateKeyPair
-import getFingerprint
+import io.socialify.socialify_android.MainActivity.Companion.applicationContext
 import io.socialify.socialifysdk.crypto.BCrypt
-import io.socialify.socialifysdk.models.SdkResponse
-import io.socialify.socialifysdk.models.payloads.DeviceInfo
-import io.socialify.socialifysdk.models.payloads.NewDevicePayload
-import io.socialify.socialifysdk.models.payloads.RegisterPayload
-import io.socialify.socialifysdk.models.responses.ApiResponse
-import io.socialify.socialifysdk.models.responses.PublicKeyResponse
+import io.socialify.socialifysdk.data.db.AppDatabase
+import io.socialify.socialifysdk.data.db.entities.User
+import io.socialify.socialifysdk.data.models.SdkResponse
+import io.socialify.socialifysdk.data.models.payloads.DeviceInfo
+import io.socialify.socialifysdk.data.models.payloads.NewDevicePayload
+import io.socialify.socialifysdk.data.models.payloads.RegisterPayload
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
+import java.security.KeyStore
 import java.util.*
 
-class SocialifyClient {
+open class SocialifyClient: ViewModel() {
     val apiVersion = "0.1"
-    val route: String = "http://192.168.8.151/api/v${apiVersion}/"
+    val route: String = "http://192.168.8.199:81/api/v${apiVersion}/"
 
     val appVersion = "0.1"
     val userAgent = "Socialify-android"
@@ -34,7 +42,12 @@ class SocialifyClient {
 
     var httpClient = OkHttpClient.Builder()
 
-    init{
+    val db = Room.databaseBuilder(
+        applicationContext(),
+        AppDatabase::class.java, "socialiy-db"
+    ).build()
+
+    init {
         logger.setLevel(HttpLoggingInterceptor.Level.BODY)
         httpClient.addInterceptor { chain ->
             val original = chain.request()
@@ -46,8 +59,8 @@ class SocialifyClient {
                 .header("AppVersion", appVersion)
                 .header("Accept", "application/json")
 
-           val request = requestBuilder.build()
-           chain.proceed(request)
+            val request = requestBuilder.build()
+            chain.proceed(request)
         }
     }
 
@@ -75,30 +88,39 @@ class SocialifyClient {
 
         val key: String? = getKey()
         val encPass = encryptMessage(password, key!!)
+
         val keypair = generateKeyPair()
 
         val signPubKey = Base64.getEncoder().encodeToString(keypair.public.encoded)
-        val signPrivKey = Base64.getEncoder().encodeToString(keypair.private.encoded)
 
-        val fingerprint = getFingerprint(signPrivKey)
-
-        val timestamp: String = (System.currentTimeMillis()/1000).toString()
+        val timestamp: String = (System.currentTimeMillis() / 1000).toString()
 
         Log.e("TIMESTAMP", timestamp)
 
         val payload = NewDevicePayload(
             username = username,
-            password =  encPass,
+            password = encPass,
             pubKey = key!!,
             device = DeviceInfo(
                 deviceName = "android",
-                signPubKey = signPubKey,
-                fingerprint = fingerprint
+                signPubKey = signPubKey
             )
         )
 
         val response = api.newDevice(generateAuthToken("newDevice", timestamp), timestamp, payload)
-                .execute().body()
+            .execute().body()
+
+        Log.e("response", response!!.toString())
+
+        val newUser: User = User(
+            username = username,
+            deviceId = response!!.data!!.deviceId,
+            userId = response!!.data!!.userId
+        )
+
+        viewModelScope.launch(Dispatchers.IO) {
+            db.userDao.insertAll(user = newUser)
+        }
 
         return SdkResponse(
             response?.success ?: false,
@@ -110,18 +132,19 @@ class SocialifyClient {
     fun registerAccount(
         username: String,
         password: String,
-        repeatedPassword: String): SdkResponse {
+        repeatedPassword: String
+    ): SdkResponse {
         val key: String? = getKey()
         val encryptedPassword = encryptMessage(password, key!!)
 
-        val timestamp: String = (System.currentTimeMillis()/1000).toString()
+        val timestamp: String = (System.currentTimeMillis() / 1000).toString()
 
         val payload = RegisterPayload(
             username = username,
             password = encryptedPassword,
             repeatPassword = encryptedPassword,
             pubKey = key!!
-       )
+        )
 
         val response = api.register(generateAuthToken("register", timestamp), timestamp, payload)
             .execute().body()
@@ -133,15 +156,15 @@ class SocialifyClient {
     }
 
     private fun getKey(): String? {
-        val timestamp: String = (System.currentTimeMillis()/1000).toString()
+        val timestamp: String = (System.currentTimeMillis() / 1000).toString()
 
         val response = api.key(generateAuthToken("getKey", timestamp), timestamp)
-                .execute().body()
+            .execute().body()
 
         return response?.data?.pubKey
     }
 
-    private fun generateAuthToken(endpoint: String, timestamp: String): String {
+    fun generateAuthToken(endpoint: String, timestamp: String): String {
         val authTokenBeginHeader = "$" + "begin-${endpoint}$"
         val authTokenEndHeader = "$" + "end-${endpoint}$"
 
@@ -152,5 +175,4 @@ class SocialifyClient {
 
         return BCrypt.hashpw(authTokenRaw, BCrypt.gensalt())
     }
-
 }

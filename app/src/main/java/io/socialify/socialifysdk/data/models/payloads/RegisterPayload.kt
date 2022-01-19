@@ -1,4 +1,4 @@
-package io.socialify.socialifysdk.models.payloads
+package io.socialify.socialifysdk.data.models.payloads
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

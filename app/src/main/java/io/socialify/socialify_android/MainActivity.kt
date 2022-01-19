@@ -1,5 +1,6 @@
 package io.socialify.socialify_android
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
@@ -23,11 +24,25 @@ import io.socialify.socialify_android.ui.Login
 import io.socialify.socialify_android.ui.Register
 import io.socialify.socialify_android.ui.theme.SocialifyandroidTheme
 import io.socialify.socialifysdk.SocialifyClient
+import io.socialify.socialifysdk.websocket.WebsocketClient
 
 class MainActivity : ComponentActivity() {
-    companion object {
-        val client = SocialifyClient()
+
+    init {
+        instance = this
     }
+
+    companion object {
+        private var instance: MainActivity? = null
+
+        fun applicationContext() : Context {
+            return instance!!.applicationContext
+        }
+
+        var client: SocialifyClient? = null
+        var socketClient: WebsocketClient? = null
+    }
+
 
     @ExperimentalMaterial3Api
     @RequiresApi(Build.VERSION_CODES.O)
@@ -42,6 +57,9 @@ class MainActivity : ComponentActivity() {
 
         val sharedPreference: SharedPreference = SharedPreference(this)
         val isUserLogged: Boolean = sharedPreference.getValue("isUserLogged")
+
+        client = SocialifyClient()
+        socketClient = WebsocketClient()
 
         setContent {
             val navController = rememberNavController()

@@ -1,13 +1,9 @@
 package io.socialify.socialify_android.ui
 
 import android.annotation.SuppressLint
-import android.content.res.Resources
-import android.icu.text.CaseMap
 import android.os.Build
-import android.widget.EditText
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Column
@@ -16,27 +12,22 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.ui.res.painterResource
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.textfield.TextInputLayout
-import com.google.android.material.theme.MaterialComponentsViewInflater
 import io.socialify.socialify_android.MainActivity
 import io.socialify.socialify_android.R
 import io.socialify.socialify_android.SharedPreference
 import io.socialify.socialify_android.ui.theme.SocialifyandroidTheme
-import io.socialify.socialifysdk.models.SdkResponse
+import io.socialify.socialifysdk.data.models.SdkResponse
 
 @SuppressLint("RestrictedApi")
 @RequiresApi(Build.VERSION_CODES.O)
@@ -52,6 +43,7 @@ fun Login(navController: NavController) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
+                .clickable {}
                 .fillMaxWidth()
         ) {
             Image(
@@ -61,6 +53,7 @@ fun Login(navController: NavController) {
                     .width(213.dp)
                     .height(218.dp)
             )
+
             Text(
                 stringResource(R.string.login_title),
                 fontSize = 34.sp,
@@ -138,23 +131,23 @@ fun Login(navController: NavController) {
                 )
             }
 
-            Spacer(Modifier.height(184.dp))
+            Spacer(Modifier.weight(1.0f))
 
             Column() {
                 Button(
                     onClick = {
-                        val resp: SdkResponse = MainActivity.client.registerDevice(
+                        val resp: SdkResponse? = MainActivity.client?.registerDevice(
                             username.text,
                             password.text
                         )
 
-                        if (resp.success) {
+                        if (resp?.success == true) {
                             sharedPreference.save("isUserLogged", true)
 
                             navController.navigate("content")
                         } else {
                             MaterialAlertDialogBuilder(context)
-                                .setMessage(resp.error.toString())
+                                .setMessage(resp?.error.toString())
                                 .setPositiveButton(context.getString(R.string.report)) { _, _ -> }
                                 .setNegativeButton(context.getString(R.string.cancel)) { _, _ -> }
                                 .create()
