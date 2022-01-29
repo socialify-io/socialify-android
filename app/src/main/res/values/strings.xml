@@ -28,6 +28,10 @@
 
     // CHAT
     <string name="message_input_placeholder">Text here...</string>
-    <string name="search_placeholder">Search</string>
+    <string name="search">Search</string>
+
+    // Icon content descriptions
+    <string name="go_back_icon_button">Go back</string>
+    <string name="send_message_icon_button">Send message</string>
 
 </resources>

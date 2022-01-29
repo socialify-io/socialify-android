@@ -4,9 +4,7 @@ import android.app.Activity
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.compose.ui.text.toLowerCase
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import io.socialify.socialifysdk.SocialifyClient
 import io.socialify.socialifysdk.data.db.entities.User
 import io.socialify.socialifysdk.data.models.payloads.SendDMPayload
@@ -15,7 +13,6 @@ import io.socket.client.Socket
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.security.KeyStore
-import java.security.MessageDigest
 import java.security.Signature
 import java.util.*
 import java.util.Collections.singletonList
@@ -25,12 +22,18 @@ class WebsocketClient: SocialifyClient() {
     var socket: Socket? = null
 
     fun establishConnection() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val opts = IO.Options()
-            opts.extraHeaders = getWebsocketHeaders()
+        if(socket?.connected() != true) {
+            viewModelScope.launch(Dispatchers.IO) {
+                val opts = IO.Options()
+                opts.extraHeaders = getWebsocketHeaders()
 
-            socket = IO.socket("http://192.168.8.199:82", opts)
-            socket?.connect()
+                socket = IO.socket("http://api.socialify.cf:82", opts)
+                socket?.connect()
+
+//            socket?.on("find_user") { args ->
+//                Log.e("ARGS", args.toString())
+//            }
+            }
         }
     }
 
@@ -45,6 +48,18 @@ class WebsocketClient: SocialifyClient() {
         )
 
         socket?.emit("send_dm", payload)
+    }
+
+    fun findUser(searchText: String) {
+        socket?.emit("find_user", searchText)
+    }
+
+    fun getFindUser(activity: Activity) {
+        socket?.on("find_user") { args ->
+            activity.runOnUiThread {
+                Log.e("ARGS", args[0].toString())
+            }
+        }
     }
 
     fun getDM(activity: Activity) {

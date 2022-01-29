@@ -68,9 +68,7 @@ fun loadPublicKey(stored: String): Key {
 fun encryptMessage(plainText: String, publickey: String): String {
     val cipher = Cipher.getInstance("RSA/ECB/OAEPPadding")
     cipher.init(Cipher.ENCRYPT_MODE, loadPublicKey(publickey))
-    return Base64.getEncoder().encodeToString(cipher.doFinal
-
-        (plainText.toByteArray()))
+    return Base64.getEncoder().encodeToString(cipher.doFinal(plainText.toByteArray()))
 }
 
 // Decrypt using privatekey

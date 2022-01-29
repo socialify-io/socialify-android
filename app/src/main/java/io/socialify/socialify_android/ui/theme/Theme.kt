@@ -9,15 +9,15 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
-import io.socialify.socialify_android.R
 
 @Immutable
 data class ExtendedColors(
     val text: Color,
     val clickableText: Color,
     val surface: Color,
-    val onSurface: Color
+    val onSurface: Color,
+
+    val gray: Color
 )
 
 val LocalExtendedColors = staticCompositionLocalOf {
@@ -25,7 +25,9 @@ val LocalExtendedColors = staticCompositionLocalOf {
         text = Color.Unspecified,
         clickableText = Color.Unspecified,
         surface = Color.Unspecified,
-        onSurface = Color.Unspecified
+        onSurface = Color.Unspecified,
+
+        gray = Color.Unspecified
     )
 }
 
@@ -68,14 +70,18 @@ fun SocialifyandroidTheme(
             text = TextDark,
             clickableText = ClickableTextDark,
             surface = SurfaceDark,
-            onSurface = OnSurfaceDark
+            onSurface = OnSurfaceDark,
+
+            gray = Color.DarkGray
         )
     } else {
         ExtendedColors(
             text = Color.Black,
             clickableText = PrimaryColor,
             surface = SurfaceLight,
-            onSurface = OnSurfaceLight
+            onSurface = OnSurfaceLight,
+
+            gray = Color.LightGray
         )
     }
 

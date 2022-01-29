@@ -1,13 +1,11 @@
 package io.socialify.socialify_android.ui.chats
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Send
@@ -17,7 +15,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -25,7 +22,6 @@ import androidx.navigation.NavController
 import io.socialify.socialify_android.R
 import io.socialify.socialify_android.ui.theme.SocialifyandroidTheme
 
-@Preview
 @Composable
 fun ChatView(navController: NavController) {
     var messageText by remember { mutableStateOf(TextFieldValue("")) }
@@ -41,7 +37,7 @@ fun ChatView(navController: NavController) {
                     androidx.compose.material3.IconButton(onClick = { navController.navigate("content") }) {
                         androidx.compose.material3.Icon(
                             imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "Go back",
+                            contentDescription = stringResource(R.string.go_back_icon_button),
                             tint = SocialifyandroidTheme.colors.text
                         )
                     }
@@ -51,7 +47,7 @@ fun ChatView(navController: NavController) {
                     androidx.compose.material3.IconButton(onClick = { /* doSomething() */ }) {
                         androidx.compose.material3.Icon(
                             imageVector = Icons.Filled.Search,
-                            contentDescription = "Search",
+                            contentDescription = stringResource(R.string.search),
                             tint = SocialifyandroidTheme.colors.text
                         )
                     }
@@ -97,7 +93,7 @@ fun ChatView(navController: NavController) {
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Send,
-                        contentDescription = "Send message",
+                        contentDescription = stringResource(R.string.send_message_icon_button),
                         tint = MaterialTheme.colors.primary,
                         modifier = Modifier.size(34.dp)
                     )

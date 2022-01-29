@@ -3,7 +3,6 @@ package io.socialify.socialifysdk
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.room.Room
@@ -20,19 +19,18 @@ import io.socialify.socialifysdk.data.models.payloads.DeviceInfo
 import io.socialify.socialifysdk.data.models.payloads.NewDevicePayload
 import io.socialify.socialifysdk.data.models.payloads.RegisterPayload
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
-import okhttp3.*
+import okhttp3.FormBody
+import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
-import java.security.KeyStore
 import java.util.*
 
 open class SocialifyClient: ViewModel() {
     val apiVersion = "0.1"
-    val route: String = "http://192.168.8.199:81/api/v${apiVersion}/"
+    val route: String = "http://api.socialify.cf:81/api/v${apiVersion}/"
 
     val appVersion = "0.1"
     val userAgent = "Socialify-android"

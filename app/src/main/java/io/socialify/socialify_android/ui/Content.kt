@@ -1,37 +1,29 @@
 package io.socialify.socialify_android.ui
 
+import android.annotation.SuppressLint
 import android.os.Build
-import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.TextField
-import androidx.compose.material.icons.filled.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import io.socialify.socialify_android.MainActivity.Companion.socketClient
-import io.socialify.socialify_android.R
 import io.socialify.socialify_android.ui.chats.ChatListElement
 import io.socialify.socialify_android.ui.chats.ChatView
+import io.socialify.socialify_android.ui.chats.SearchView
 import io.socialify.socialify_android.ui.theme.SocialifyandroidTheme
 
+@SuppressLint("ComposableDestinationInComposeScope")
 @RequiresApi(Build.VERSION_CODES.O)
 @ExperimentalMaterial3Api
 @Preview(showBackground = false)
@@ -51,10 +43,12 @@ fun Content() {
                 containerColor = MaterialTheme.colors.background,
                 topBar = {
                     SmallTopAppBar(
-                        title = { Text(
-                            items[selectedItem],
-                            color = SocialifyandroidTheme.colors.text
-                        ) },
+                        title = {
+                            Text(
+                                items[selectedItem],
+                                color = SocialifyandroidTheme.colors.text
+                            )
+                        },
                         navigationIcon = {
                             IconButton(onClick = { /* doSomething() */ }) {
                                 Icon(
@@ -66,7 +60,9 @@ fun Content() {
                         },
 
                         actions = {
-                            IconButton(onClick = { /* doSomething() */ }) {
+                            IconButton(onClick = {
+                               navController.navigate("search")
+                            }) {
                                 Icon(
                                     imageVector = Icons.Filled.Search,
                                     contentDescription = "Search",
@@ -79,40 +75,25 @@ fun Content() {
                 },
 
                 content = {
-                    var searchText by remember { mutableStateOf(TextFieldValue("")) }
-                    var isSearchBarFocused: Boolean = false
-
-//                    TextField(
-//                        value = searchText,
-//                        onValueChange = { it ->
-//                            searchText = it
-//                        },
-//                        label = {
-//                            androidx.compose.material.Text(
-//                                stringResource(R.string.search_placeholder),
-//                                color = SocialifyandroidTheme.colors.text
-//                            )
-//                        }
-//                    )
 
                     Column() {
                         Box(modifier = Modifier
-                            .clickable { navController.navigate("chat") }){
+                            .clickable { navController.navigate("chat") }) {
                             ChatListElement()
                         }
 
                         Box(modifier = Modifier
-                            .clickable { navController.navigate("chat") }){
+                            .clickable { navController.navigate("chat") }) {
                             ChatListElement()
                         }
 
                         Box(modifier = Modifier
-                            .clickable { navController.navigate("chat") }){
+                            .clickable { navController.navigate("chat") }) {
                             ChatListElement()
                         }
 
                         Box(modifier = Modifier
-                            .clickable { navController.navigate("chat") }){
+                            .clickable { navController.navigate("chat") }) {
                             ChatListElement()
                         }
                     }
@@ -121,9 +102,12 @@ fun Content() {
                 floatingActionButton = {
                     FloatingActionButton(
                         containerColor = SocialifyandroidTheme.colors.onSurface,
-                        onClick = {  }
+                        onClick = { }
                     ) {
-                        Icon(Icons.Filled.Add, "Add new chat")
+                        Icon(
+                            Icons.Filled.Add, "Add new chat",
+                            tint = SocialifyandroidTheme.colors.text
+                        )
                     }
                 },
 
@@ -151,7 +135,7 @@ fun Content() {
             )
         }
         composable("chat") { ChatView(navController = navController) }
+        composable("search") { SearchView(navController = navController) }
     }
-
 }
 
