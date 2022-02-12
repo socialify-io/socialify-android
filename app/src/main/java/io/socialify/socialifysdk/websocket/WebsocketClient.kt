@@ -27,7 +27,7 @@ class WebsocketClient: SocialifyClient() {
                 val opts = IO.Options()
                 opts.extraHeaders = getWebsocketHeaders()
 
-                socket = IO.socket("http://api.socialify.cf:82", opts)
+                socket = IO.socket("http://api.socialify.cf:81", opts)
                 socket?.connect()
 
 //            socket?.on("find_user") { args ->

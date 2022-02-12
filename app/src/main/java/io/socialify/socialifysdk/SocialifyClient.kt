@@ -30,7 +30,7 @@ import java.util.*
 
 open class SocialifyClient: ViewModel() {
     val apiVersion = "0.1"
-    val route: String = "http://api.socialify.cf:81/api/v${apiVersion}/"
+    val route: String = "http://api.socialify.cf/api/v${apiVersion}/"
 
     val appVersion = "0.1"
     val userAgent = "Socialify-android"
