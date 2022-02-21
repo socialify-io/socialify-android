@@ -41,6 +41,9 @@ class MainActivity : ComponentActivity() {
 
         var client: SocialifyClient? = null
         var socketClient: WebsocketClient? = null
+
+        var receiverID: Int? = null
+        var receiverName: String? = null
     }
 
 

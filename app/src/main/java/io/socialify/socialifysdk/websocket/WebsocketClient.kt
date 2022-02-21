@@ -5,6 +5,8 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.viewModelScope
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.ToJson
 import io.socialify.socialifysdk.SocialifyClient
 import io.socialify.socialifysdk.data.db.entities.User
 import io.socialify.socialifysdk.data.models.payloads.SendDMPayload
@@ -12,6 +14,7 @@ import io.socket.client.IO
 import io.socket.client.Socket
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import java.security.KeyStore
 import java.security.Signature
 import java.util.*
@@ -43,11 +46,15 @@ class WebsocketClient: SocialifyClient() {
 
     fun sendDM(message: String, receiverId: Int) {
         val payload = SendDMPayload(
-            message = message,
-            receiverId = receiverId
+            receiverId = receiverId,
+            message = message
         )
 
-        socket?.emit("send_dm", payload)
+        val moshi = Moshi.Builder().build()
+        val jsonAdapter = moshi.adapter<SendDMPayload>(SendDMPayload::class.java!!)
+        val payload_parsed = jsonAdapter.toJson(payload)
+
+        socket?.emit("send_dm", JSONObject(payload_parsed))
     }
 
     fun findUser(searchText: String) {

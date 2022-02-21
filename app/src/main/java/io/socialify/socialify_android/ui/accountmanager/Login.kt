@@ -147,7 +147,7 @@ fun Login(navController: NavController) {
                             navController.navigate("content")
                         } else {
                             MaterialAlertDialogBuilder(context)
-                                .setMessage(resp?.error.toString())
+                                .setMessage(resp?.error?.reason.toString())
                                 .setPositiveButton(context.getString(R.string.report)) { _, _ -> }
                                 .setNegativeButton(context.getString(R.string.cancel)) { _, _ -> }
                                 .create()

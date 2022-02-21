@@ -110,6 +110,13 @@ open class SocialifyClient: ViewModel() {
 
         Log.e("response", response!!.toString())
 
+        if (!response.success) {
+            return SdkResponse(
+                response?.success ?: false,
+                response?.error
+            )
+        }
+
         val newUser: User = User(
             username = username,
             deviceId = response!!.data!!.deviceId,

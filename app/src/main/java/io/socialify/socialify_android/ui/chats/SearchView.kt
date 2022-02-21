@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import io.socialify.socialify_android.MainActivity
 import io.socialify.socialify_android.MainActivity.Companion.socketClient
 import io.socialify.socialify_android.R
 import io.socialify.socialify_android.ui.theme.SocialifyandroidTheme
@@ -105,6 +106,7 @@ fun SearchView(navController: NavController) {
             var searchResults by remember { mutableStateOf(JSONArray()) }
 
             socketClient?.socket?.on("find_user") { args ->
+                Log.e("find_userv", args.toString());
                 searchResults = args[0] as JSONArray
             }
 
@@ -113,7 +115,11 @@ fun SearchView(navController: NavController) {
                     val result = searchResults.getJSONObject(i)
 
                     Box(modifier = Modifier
-                        .clickable { Log.e("DUPA", result["id"].toString()) }) {
+                        .clickable {
+                            MainActivity.receiverID = i + 1;
+                            MainActivity.receiverName = result["username"].toString();
+                            navController.navigate("chat")
+                        }) {
                         androidx.compose.material.Surface {
                             Column() {
                                 Row(
