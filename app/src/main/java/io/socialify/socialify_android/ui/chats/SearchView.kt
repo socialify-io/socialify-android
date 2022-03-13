@@ -106,7 +106,7 @@ fun SearchView(navController: NavController) {
             var searchResults by remember { mutableStateOf(JSONArray()) }
 
             socketClient?.socket?.on("find_user") { args ->
-                Log.e("find_userv", args.toString());
+                Log.e("find_user", args.toString())
                 searchResults = args[0] as JSONArray
             }
 

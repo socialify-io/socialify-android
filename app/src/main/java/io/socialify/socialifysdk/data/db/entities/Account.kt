@@ -7,15 +7,22 @@ import androidx.room.PrimaryKey
 import java.io.Serializable
 
 @Entity(
-    tableName = "Users",
+    tableName = "Accounts",
     indices = [Index(
-        value = ["username"]
+        value = ["username", "deviceId", "userId"],
+        unique = true
     )]
 )
-data class User (
+data class Account(
     @ColumnInfo(name = "username")
-    val username: String
+    val username: String,
+
+    @ColumnInfo(name = "deviceId")
+    val deviceId: Int,
+
+    @ColumnInfo(name = "userId")
+    val userId: Long
 ): Serializable {
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey(autoGenerate = true)
     var id: Long = 0
 }

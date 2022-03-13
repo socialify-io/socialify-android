@@ -1,6 +1,8 @@
 package io.socialify.socialify_android.ui.chats
 
+import android.annotation.SuppressLint
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -14,6 +16,7 @@ import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,21 +24,47 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LiveData
 import androidx.navigation.NavController
-import androidx.navigation.NavOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.socialify.socialify_android.MainActivity
+import io.socialify.socialify_android.MainActivity.Companion.socketClient
 import io.socialify.socialify_android.R
 import io.socialify.socialify_android.ui.theme.SocialifyandroidTheme
-import io.socialify.socialifysdk.data.models.SdkResponse
+import io.socialify.socialifysdk.data.db.entities.Account
+import io.socialify.socialifysdk.data.db.entities.DM
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import org.json.JSONObject
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ChatView(navController: NavController) {
     var messageText by remember { mutableStateOf(TextFieldValue("")) }
     val context = LocalContext.current
-    var receiverId = MainActivity.receiverID;
-    var username = MainActivity.receiverName;
+    var receiverId = MainActivity.receiverID
+    var username = MainActivity.receiverName
+
+    var allMessages: List<DM>? = listOf()
+    var allMessagesLiveData: LiveData<List<DM>>? = null
+
+    var accounts: List<Account>? = null
+
+    GlobalScope.launch {
+        accounts = socketClient?.db?.accountDao?.getAll()
+
+        allMessagesLiveData =
+            socketClient?.db?.dmDao?.getDMs(
+                /*account = accounts?.get(0)!!.id,
+                receiver = receiverId!!*/
+            )
+        Log.e("DUPA", allMessagesLiveData.toString())
+    }
+
+//    allMessagesLiveData?.observeForever() {
+//        allMessages.
+//    }
 
     Scaffold(
         topBar = {
@@ -69,8 +98,43 @@ fun ChatView(navController: NavController) {
             )
         },
         content = {
-            Text("Blablalba")
-            Text("Blablalba")
+            socketClient?.socket?.on("send_dm") { args ->
+                if (args[0] != null) {
+                    var response = args[0] as JSONObject
+                    Log.e("NOWY DM", response.toString())
+
+                    val newDM = DM(
+                        userId   = accounts?.get(0)!!.userId,
+                        receiver = response["receiverId"].toString().toLong(),
+                        sender   = response["senderId"].toString().toLong(),
+                        message  = response["message"] as String,
+                        username = response["username"] as String,
+                        isRead   = true,
+                        date     = response["date"].toString()
+                    )
+
+                    GlobalScope.launch {
+                       socketClient?.db?.dmDao?.insertAll(dm = newDM)
+                    }
+                }
+            }
+
+//            allMessages?.forEach() { message ->
+//                Text(message.toString())
+//            }
+
+            //Text(allMessages.toString())
+
+            val items by allMessagesLiveData!!.observeAsState()
+            Log.e("DUPA", items.toString())
+
+            //LazyColumn {
+                //item {
+                    items?.forEach { message ->
+                        Text("<${message.username}>: ${message.message}")
+                    }
+               // }
+           // }
         },
         bottomBar = {
             Row(
@@ -120,6 +184,23 @@ fun ChatView(navController: NavController) {
                                 .create()
                                 .show()
                         }
+                        if (receiverId != null) {
+                            if (messageText.text != "") {
+                                MainActivity.socketClient?.sendDM(
+                                    messageText.text,
+                                    receiverId
+                                )
+                            }
+                        } else {
+                            MaterialAlertDialogBuilder(context)
+                                .setMessage("There was an error while sending this message.")
+                                .setPositiveButton(context.getString(R.string.report)) { _, _ -> navController.navigate("content"); }
+                                .setNegativeButton(context.getString(R.string.cancel)) { _, _ -> navController.navigate("content"); }
+                                .create()
+                                .show()
+                        }
+
+                        messageText = TextFieldValue("");
 
                         messageText = TextFieldValue("");
 

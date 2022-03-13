@@ -13,7 +13,7 @@ import generateKeyPair
 import io.socialify.socialify_android.MainActivity.Companion.applicationContext
 import io.socialify.socialifysdk.crypto.BCrypt
 import io.socialify.socialifysdk.data.db.AppDatabase
-import io.socialify.socialifysdk.data.db.entities.User
+import io.socialify.socialifysdk.data.db.entities.Account
 import io.socialify.socialifysdk.data.models.SdkResponse
 import io.socialify.socialifysdk.data.models.payloads.DeviceInfo
 import io.socialify.socialifysdk.data.models.payloads.NewDevicePayload
@@ -42,7 +42,7 @@ open class SocialifyClient: ViewModel() {
 
     val db = Room.databaseBuilder(
         applicationContext(),
-        AppDatabase::class.java, "socialiy-db"
+        AppDatabase::class.java, "socialify-db"
     ).build()
 
     init {
@@ -117,14 +117,14 @@ open class SocialifyClient: ViewModel() {
             )
         }
 
-        val newUser: User = User(
+        val newAccount: Account = Account(
             username = username,
             deviceId = response!!.data!!.deviceId,
-            userId = response!!.data!!.userId
+            userId   = response!!.data!!.userId.toLong()
         )
 
         viewModelScope.launch(Dispatchers.IO) {
-            db.userDao.insertAll(user = newUser)
+            db.accountDao.insertAll(account = newAccount)
         }
 
         return SdkResponse(

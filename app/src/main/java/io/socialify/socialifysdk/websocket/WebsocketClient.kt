@@ -6,14 +6,14 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.viewModelScope
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.ToJson
 import io.socialify.socialifysdk.SocialifyClient
-import io.socialify.socialifysdk.data.db.entities.User
+import io.socialify.socialifysdk.data.db.entities.Account
 import io.socialify.socialifysdk.data.models.payloads.SendDMPayload
 import io.socket.client.IO
 import io.socket.client.Socket
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.json.JSONArray
 import org.json.JSONObject
 import java.security.KeyStore
 import java.security.Signature
@@ -73,7 +73,8 @@ class WebsocketClient: SocialifyClient() {
         socket?.on("send_dm") { args ->
             if (args[0] != null) {
                 activity.runOnUiThread {
-                    Log.e("ARGS", args.toString())
+                    var response = args[0] as JSONArray
+                    Log.e("NOWY DM", response.toString())
                 }
             }
         }
@@ -85,10 +86,10 @@ class WebsocketClient: SocialifyClient() {
 
         val headers: MutableMap<String, List<String>> = HashMap<String, List<String>>()
 
-        val userDao = db.userDao
+        val accountDao = db.accountDao
 
-        val users: List<User> = userDao.getAll()
-        val actualUser: User = users[0]
+        val users: List<Account> = accountDao.getAll()
+        val actualUser: Account = users[0]
 
         val ks: KeyStore = KeyStore.getInstance("AndroidKeyStore").apply {
             load(null)
