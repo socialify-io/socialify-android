@@ -4,7 +4,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import java.io.Serializable
 
 @Entity(
     tableName = "DMs",
@@ -19,6 +18,9 @@ import java.io.Serializable
     )]
 )
 data class DM (
+    @PrimaryKey(autoGenerate = false)
+    var id: Long,
+
     @ColumnInfo(name = "user")
     val userId: Long,
 
@@ -39,7 +41,4 @@ data class DM (
 
     @ColumnInfo(name = "date")
     val date: String
-): Serializable {
-    @PrimaryKey(autoGenerate = false)
-    var id: Long = 0
-}
+)

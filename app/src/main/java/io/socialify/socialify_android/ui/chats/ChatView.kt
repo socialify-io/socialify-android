@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -54,10 +55,13 @@ fun ChatView(navController: NavController) {
     GlobalScope.launch {
         accounts = socketClient?.db?.accountDao?.getAll()
 
+        Log.e("ACCOUNTID", accounts?.get(0)!!.userId.toString())
+        Log.e("RECEIVERID", receiverId!!.toString())
+
         allMessagesLiveData =
             socketClient?.db?.dmDao?.getDMs(
-                /*account = accounts?.get(0)!!.id,
-                receiver = receiverId!!*/
+                account = accounts?.get(0)!!.userId,
+                receiver = receiverId!!
             )
         Log.e("DUPA", allMessagesLiveData.toString())
     }
@@ -104,6 +108,7 @@ fun ChatView(navController: NavController) {
                     Log.e("NOWY DM", response.toString())
 
                     val newDM = DM(
+                        id       = response["id"].toString().toLong(),
                         userId   = accounts?.get(0)!!.userId,
                         receiver = response["receiverId"].toString().toLong(),
                         sender   = response["senderId"].toString().toLong(),
@@ -128,13 +133,13 @@ fun ChatView(navController: NavController) {
             val items by allMessagesLiveData!!.observeAsState()
             Log.e("DUPA", items.toString())
 
-            //LazyColumn {
+            Column {
                 //item {
                     items?.forEach { message ->
                         Text("<${message.username}>: ${message.message}")
                     }
                // }
-           // }
+            }
         },
         bottomBar = {
             Row(
@@ -184,23 +189,6 @@ fun ChatView(navController: NavController) {
                                 .create()
                                 .show()
                         }
-                        if (receiverId != null) {
-                            if (messageText.text != "") {
-                                MainActivity.socketClient?.sendDM(
-                                    messageText.text,
-                                    receiverId
-                                )
-                            }
-                        } else {
-                            MaterialAlertDialogBuilder(context)
-                                .setMessage("There was an error while sending this message.")
-                                .setPositiveButton(context.getString(R.string.report)) { _, _ -> navController.navigate("content"); }
-                                .setNegativeButton(context.getString(R.string.cancel)) { _, _ -> navController.navigate("content"); }
-                                .create()
-                                .show()
-                        }
-
-                        messageText = TextFieldValue("");
 
                         messageText = TextFieldValue("");
 

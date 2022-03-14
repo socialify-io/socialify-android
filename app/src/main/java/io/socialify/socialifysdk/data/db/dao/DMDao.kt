@@ -12,6 +12,6 @@ interface DMDao {
     @Insert(onConflict = REPLACE)
     suspend fun insertAll(dm: DM)
 
-    @Query("SELECT * FROM DMs --WHERE sender=:account AND receiver=:receiver OR sender=:receiver AND receiver=:account")
-    fun getDMs(/*account: Long, receiver: Int*/): LiveData<List<DM>>
+    @Query("SELECT * FROM DMs WHERE (sender=:account AND receiver=:receiver) OR (sender=:receiver AND receiver=:account)")
+    fun getDMs(account: Long, receiver: Int): LiveData<List<DM>>
 }
